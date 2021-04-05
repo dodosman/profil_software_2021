@@ -12,7 +12,7 @@ This project process historical data from external API for various cryptocurrenc
 ## Technologies
 Project is created with:
 * Pandas version 1.2.3
-* Coinpaprika API version 1.6.1
+* Coinpaprika API version 0.1.0
 * Click  version 7.1.2
 
 ## Setup
