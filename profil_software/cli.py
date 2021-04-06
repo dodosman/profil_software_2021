@@ -6,6 +6,7 @@ def main():
     pass
 
 @main.command()
+@click.option('--CC_name', help='enter a desired name of crypto currency')
 @click.option('--date_start', help='enter a starting date to show the range of avg price')
 @click.option('--date_end', help='enter an ending date to show the range of avg price')
 def average_by_month(date_start, date_end):
@@ -14,7 +15,7 @@ def average_by_month(date_start, date_end):
   ch.average_by_month(date_start, date_end)
 
 @main.command()
-
+@click.option('--CC_name', help='enter a desired name of crypto currency')
 @click.option('--date_start', help='enter a starting date to show the range of avg price')
 @click.option('--date_end', help='enter an ending date to show the range of avg price')
 def high_cumulative_growth(date_start, date_end):

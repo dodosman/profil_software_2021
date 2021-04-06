@@ -1,6 +1,16 @@
+from datetime import datetime
+
 import pandas as pd
 from coinpaprika import client as Coinpaprika
 import itertools, operator
+
+"""
+1. Posprzataj repo
+2. Dodaj nazwe krypowaluty jako kolejny argument (w Class i cli)
+3. Napisz README gdzie opiszesz co zrobiles + przyklady
+4. requirements.txt
+5. walidacja dat, raise Exception
+"""
 
 
 class CryptoHandler:
@@ -8,30 +18,44 @@ class CryptoHandler:
   def __init__(self):
     self.client = Coinpaprika.Client()
 
+  def user_inputed_CC_name(self, CC_name):
+    self.curency_name = f"{CC_name}"
+    return self
+
 
   def _create_start_end_times(self, date_start, date_end):
-    self.start_time = f"{date_start}T00:00:00Z"
-    self.end_time = f"{date_end}T00:00:00Z"
-    return self
+    if self._validate_dates(date_start, date_end) == True:
+      self.start_time = f"{date_start}T00:00:00Z"
+      self.end_time = f"{date_end}T00:00:00Z"
+      return self
+
+  def _validate_dates(self, date_start, date_end):
+    first_CC_usage = datetime.strptime('2009-01-12', "%Y-%m-%d")
+    start_date = datetime.strptime(date_start, "%Y-%m-%d")
+    end_date = datetime.strptime(date_end, "%Y-%m-%d")
+    if start_date > first_CC_usage and start_date < end_date:
+      return True
+    else:
+      raise Exception
 
 
 
   def _convert_to_df(self, date_start, date_end):
     self._create_start_end_times(date_start, date_end)
-
-    dict_raw = self.client.candles("btc-bitcoin", start=self.start_time, end=self.end_time)
+    self.user_inputed_CC_name(self, CC_name)
+    dict_raw = self.client.candles(self.curency_name, start=self.start_time, end=self.end_time)
     df_raw = pd.DataFrame(dict_raw)
     df = df_raw.filter(items=["time_close", "close"])
     return df
 
   def average_by_month(self, date_start, date_end):
     df = self._convert_to_df(date_start, date_end)
-    df["month"] = pd.DatetimeIndex(df['time_close']).month
+    df["month"] = pd.DatetimeIndex(df["time_close"]).month
     self.df_gb = df.groupby("month")["close"].mean()
     print(round(self.df_gb, 2))
 
   def high_cumulative_growth(self, date_start, date_end):
-    dict_raw = self.client.candles("btc-bitcoin", start=f"{date_start}T00:00:00Z", end=f"{date_end}T00:00:00Z")
+    dict_raw = self.client.candles(self.curency_name, start=f"{date_start}T00:00:00Z", end=f"{date_end}T00:00:00Z")
     price = []
     dates = []
     for i in range(len(dict_raw)):
