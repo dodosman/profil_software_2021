@@ -32,8 +32,8 @@ Required parameters:
 
 ## high-cumulative-growth
 Required parameters:
-* --date_start description: enter a starting date to show the range of avg price
-* --date_end description: enter an ending date to show the range of avg price
+* --date_start description: enter a starting date to show the range of high cumulative growth
+* --date_end description: enter an ending date to show the range of high cumulative growth
 
 ## export
 Required parameters:
