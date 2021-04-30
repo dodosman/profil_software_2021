@@ -1,7 +1,5 @@
 import click
-
-from calculations import CryptoHandler
-
+from profil_software_2021.calculations import CryptoHandler
 
 @click.group(chain=True)
 def main():
@@ -40,7 +38,6 @@ def high_cumulative_growth(coin, date_start, date_end):
 def export(coin, date_start, date_end, file_format, filename):
     ch = CryptoHandler()
     ch.export(coin, date_start, date_end, file_format, filename)
-
 
 if __name__ == "__main__":
     main()
