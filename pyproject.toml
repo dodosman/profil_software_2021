@@ -6,7 +6,7 @@ authors = ["Dominik Semsch <dominik.semsch@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-ch = "profile_software.cli:main"
+ch = "cli:main"
 
 # NOTE: use pip 21.1
 
@@ -15,6 +15,7 @@ python = "^3.9"
 coinpaprika = "0.1.0"
 click = "7.1.2"
 pre-commit = "2.12.1"
+pandas = "1.2.3"
 
 [tool.poetry.dev-dependencies]
 

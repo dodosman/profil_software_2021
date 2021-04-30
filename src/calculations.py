@@ -147,8 +147,8 @@ if __name__ == "__main__":
   print("Examples")
 
 # Example 1
-# ch = CryptoHandler()
-# ch.average_by_month("btc-bitcoin", "2014-01-01", "2015-01-01")
+ch = CryptoHandler()
+ch.average_by_month("btc-bitcoin", "2014-01-01", "2015-01-01")
 # ch.average_by_month("usdt-tether", "2021-01-01", "2021-05-01")
 # ch.average_by_month("eth-ethereum", "2016-01-01", "2017-01-01")
 
