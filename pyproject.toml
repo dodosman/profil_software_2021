@@ -3,6 +3,14 @@ name = "profil_software_2021"
 version = "0.1.0"
 description = "Package for the recruitment process programming tasks."
 authors = ["Dominik Semsch <dominik.semsch@gmail.com>"]
+readme = README.md
+packages = [
+    { include = "profil_software_2021"},
+]
+
+[tool.poetry.scripts]
+ch = "profile_software.cli:main"
+
 
 # NOTE: use pip 21.1
 
