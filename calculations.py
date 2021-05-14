@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pandas as pd
+from _pytest.config import main
 from coinpaprika import client as Coinpaprika
 
 
@@ -83,68 +84,66 @@ class CryptoHandler:
         print(df_gb)
         return df_gb
 
-    def high_cumulative_growth(self, coin, date_start, date_end):
-        df = self._convert_to_df(coin, date_start, date_end)
+    def _high_cumulative_growth(self, df):
         price = df["close"].squeeze()
         dates = df["time_close"].squeeze()
 
-        bool_list = len(price)
-        m = 1
-        l = 1
-        starting_index = 0
-        for i in range(1, bool_list):
-            if price[i] > price[i - 1]:
-                l = l + 1
+        bool_list = list(range(len(price)))
+        for i in range(len(price)):
+            if i == 0:
+                bool_list[i] = 1
+            elif price[i] > price[i - 1]:
+                bool_list[i] = bool_list[i - 1] + 1
             else:
-                if m < l:
-                    m = l
-                    starting_index = i - m
-                l = 1
-        if m < l:
-            m = l
-            starting_index = price - m
+                bool_list[i] = 0
 
-        starting_date = dates[starting_index][:10]
-        ending_date = dates[m + starting_index - 1][:10]
-        value_increase = round(price[m + starting_index - 1] - price[starting_index], 2)
-
+        index_max = bool_list.index(max(bool_list))
+        index_min = index_max - max(bool_list) + 1
+        value_increase = round(price[index_max] - price[index_min], 2)
         print(
-            f"Longest consecutive period was from "
-            f"{starting_date} to {ending_date} "
+            f"Longest consecutive period was from {dates[index_min][:10]} to {dates[index_max][:10]} "
             f"with increase of: ${value_increase}"
         )
+        # print(df)
+        # values = dict()
+        # values['date_min'] = "GeeksforGeeks"
+        # values['date_min'] = 20
+        # values['value_increase'] = 20
+        return dates[index_min], dates[index_max], value_increase
 
+    def high_cumulative_growth(self, coin, date_start, date_end):
+        df = self._convert_to_df(coin, date_start, date_end)
+        self._high_cumulative_growth(df)
 
-def _verify_export_filename(self, filename):
-    split_filename = filename.split(".")
-    if "csv" in split_filename:
-        raise Exception("Filename should not be named as a file type.")
-    elif "json" in split_filename:
-        raise Exception("Filename should not be named as a file type.")
+    def _verify_export_filename(self, filename):
+        split_filename = filename.split(".")
+        if "csv" in split_filename:
+            raise Exception("Filename should not be named as a file type.")
+        elif "json" in split_filename:
+            raise Exception("Filename should not be named as a file type.")
 
+    def export(self, coin, date_start, date_end, file_format, filename=None):
+        df = self._convert_to_df(coin, date_start, date_end)
+        df = df.rename(columns={"time_close": "Date", "close": "Price"})
 
-def export(self, coin, date_start, date_end, file_format, filename=None):
-    df = self._convert_to_df(coin, date_start, date_end)
-    df = df.rename(columns={"time_close": "Date", "close": "Price"})
+        if filename is None:
+            filename = f"{coin}-{date_start}-{date_end}"
+        else:
+            self._verify_export_filename(filename)
 
-    if filename is None:
-        filename = f"{coin}-{date_start}-{date_end}"
-    else:
-        self._verify_export_filename(filename)
-
-    if file_format == "csv":
-        df.to_csv(f"{filename}.csv", index=False)
-    elif file_format == "json":
-        df.to_json(f"{filename}.json", orient="records")
-    else:
-        raise Exception(
-            "We don't support other types os saving files, "
-            "please type format .json or .csv"
-        )
+        if file_format == "csv":
+            df.to_csv(f"{filename}.csv", index=False)
+        elif file_format == "json":
+            df.to_json(f"{filename}.json", orient="records")
+        else:
+            raise Exception(
+                "We don't support other types os saving files, "
+                "please type format .json or .csv"
+            )
 
 
 if __name__ == "__main__":
-    print("Examples")
+    main()
 
 # Example 1
 # ch = CryptoHandler()
@@ -154,7 +153,7 @@ if __name__ == "__main__":
 
 # Example 2
 # ch = CryptoHandler()
-# ch.high_cumulative_growth("btc-bitcoin", "2015-01-01", "2016-01-01")
+# ch.high_cumulative_growth("btc-bitcoin", "2014-01-01", "2014-01-13")
 # ch.high_cumulative_growth("usdt-tether", "2021-01-01", "2021-05-01")
 # ch.high_cumulative_growth("eth-ethereum", "2016-01-01", "2017-01-01")
 
