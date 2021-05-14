@@ -1,6 +1,5 @@
 import pandas as pd
 import pytest
-
 from calculations import CryptoHandler
 
 ch = CryptoHandler()
